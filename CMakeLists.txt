@@ -30,6 +30,7 @@ find_package(Threads REQUIRED)
 # ---------------------------------------------------------------------------
 add_library(radio_core
     src/radio.cpp
+    src/message_queue.cpp
 )
 target_include_directories(radio_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(radio_core PUBLIC Threads::Threads)
@@ -63,9 +64,11 @@ if(RADIO_SIM_BUILD_TESTS)
     add_executable(radio_sim_tests
         tests/radio_test.cpp
         tests/radio_thread_test.cpp
+        tests/message_queue_test.cpp
     )
     target_link_libraries(radio_sim_tests PRIVATE radio_core GTest::gtest_main)
 
     include(GoogleTest)
-    gtest_discover_tests(radio_sim_tests)
+    # The timeout turns a deadlocked (hanging) test into a failure.
+    gtest_discover_tests(radio_sim_tests PROPERTIES TIMEOUT 10)
 endif()
