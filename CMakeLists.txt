@@ -14,6 +14,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Emit compile_commands.json for editors and clangd.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# ThreadSanitizer detects data races at runtime. It must apply to every
+# target (including GoogleTest), so it's set globally before any targets.
+option(RADIO_SIM_ENABLE_TSAN "Build with ThreadSanitizer" OFF)
+if(RADIO_SIM_ENABLE_TSAN)
+    add_compile_options(-fsanitize=thread -g -O1)
+    add_link_options(-fsanitize=thread)
+endif()
+
+find_package(Threads REQUIRED)
+
 # ---------------------------------------------------------------------------
 # Core library: all simulator logic lives here so both the app and the tests
 # can link against it.
@@ -22,6 +32,7 @@ add_library(radio_core
     src/radio.cpp
 )
 target_include_directories(radio_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(radio_core PUBLIC Threads::Threads)
 target_compile_options(radio_core PRIVATE -Wall -Wextra -Wpedantic)
 
 # ---------------------------------------------------------------------------
@@ -51,6 +62,7 @@ if(RADIO_SIM_BUILD_TESTS)
 
     add_executable(radio_sim_tests
         tests/radio_test.cpp
+        tests/radio_thread_test.cpp
     )
     target_link_libraries(radio_sim_tests PRIVATE radio_core GTest::gtest_main)
 

@@ -1,6 +1,7 @@
 #include "radio.h"
 
 bool Radio::setMode(Mode newMode) {
+    std::lock_guard<std::mutex> lock(mutex_);
     bool allowed = false;
 
     // Which modes can we move to from the current one?
@@ -27,9 +28,11 @@ bool Radio::setMode(Mode newMode) {
 }
 
 Mode Radio::getMode() const {
+    std::lock_guard<std::mutex> lock(mutex_);
     return mode_;
 }
 bool Radio::setPower(int newPower) {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (newPower < 1 || newPower > 5){
         return false;
     }
@@ -37,9 +40,11 @@ bool Radio::setPower(int newPower) {
     return true;
 }
 int Radio::getPower() const {
+    std::lock_guard<std::mutex> lock(mutex_);
     return power_;
 }
 bool Radio::setFrequency(double newFrequency) {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (!(newFrequency >= 30 && newFrequency <= 512)) {
         return false;
     }
@@ -51,5 +56,6 @@ bool Radio::setFrequency(double newFrequency) {
     
 }
 double Radio::getFrequency() const {
+    std::lock_guard<std::mutex> lock(mutex_);
     return frequency_;
 }
