@@ -31,6 +31,8 @@ find_package(Threads REQUIRED)
 add_library(radio_core
     src/radio.cpp
     src/message_queue.cpp
+    src/channel.cpp
+    src/station.cpp
 )
 target_include_directories(radio_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(radio_core PUBLIC Threads::Threads)
@@ -65,6 +67,7 @@ if(RADIO_SIM_BUILD_TESTS)
         tests/radio_test.cpp
         tests/radio_thread_test.cpp
         tests/message_queue_test.cpp
+        tests/station_test.cpp
     )
     target_link_libraries(radio_sim_tests PRIVATE radio_core GTest::gtest_main)
 

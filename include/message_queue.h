@@ -11,6 +11,7 @@ struct Message
 {
     double frequencyMhz = 0.0;  // frequency the message was sent on
     std::string text;
+    std::string sender;         // name of the transmitting station
 };
 
 // A first-in, first-out queue that several threads can use at once.

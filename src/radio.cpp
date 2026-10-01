@@ -59,3 +59,8 @@ double Radio::getFrequency() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return frequency_;
 }
+
+RadioStatus Radio::status() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return {mode_, frequency_, power_};
+}

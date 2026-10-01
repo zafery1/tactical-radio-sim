@@ -101,6 +101,19 @@ TEST(RadioPowerTest, ValidPowerIsAccepted) {
     EXPECT_EQ(radio.getPower(), 5);
 }
 
+TEST(RadioStatusTest, StatusReflectsCurrentSettings) {
+    Radio radio;
+    ASSERT_TRUE(radio.setMode(Mode::Standby));
+    ASSERT_TRUE(radio.setFrequency(150.0));
+    ASSERT_TRUE(radio.setPower(4));
+
+    RadioStatus status = radio.status();
+
+    EXPECT_EQ(status.mode, Mode::Standby);
+    EXPECT_EQ(status.frequencyMhz, 150.0);
+    EXPECT_EQ(status.power, 4);
+}
+
 TEST(RadioPowerTest, OutOfRangePowerIsRejected) {
     Radio radio;
 

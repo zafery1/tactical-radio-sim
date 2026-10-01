@@ -11,6 +11,14 @@ enum class Mode
     Transmit
 };
 
+// A snapshot of all radio settings, read at one instant.
+struct RadioStatus
+{
+    Mode mode;
+    double frequencyMhz;
+    int power;
+};
+
 class Radio
 {
 public:
@@ -20,6 +28,10 @@ public:
     double getFrequency() const;
     bool setPower(int newPower);
     int getPower() const;
+
+    // Reads every setting under one lock, so the values are consistent with
+    // each other even if another thread is changing the radio.
+    RadioStatus status() const;
 private:
     Mode mode_ = Mode::Off;
     double frequency_ = 30.0;
